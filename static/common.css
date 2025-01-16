@@ -4,9 +4,9 @@
 
 @import url('https://fonts.googleapis.com/css2?family=Nanum+Gothic&family=Noto+Sans+KR:wght@100..900&display=swap');
 
-* {
+/* * {
   font-family: "Nanum Gothic", serif !important;
-}
+} */
 
 html, body {
   width: 100%;

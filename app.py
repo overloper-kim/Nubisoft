@@ -9,9 +9,9 @@ template = env.get_template("index.html")
 
 # 개인 환경에 따라 host 및 포트 정보 수정
 HOST="127.0.0.1"
-PORT=3308
+PORT=3306
 USER="root"
-PW="sad123"
+PW="root"
 DB="nubisoft"
 
 db = ConnectMysql()
@@ -24,14 +24,59 @@ def home():
   print("Get 요청")
   return render_template('index.html', context='')
 
-@app.route("/login")
+@app.route("/login", methods=['POST'])
 def login():
   component_name = 'login'
+
+  emailReceive = request.form['emailGive']
+  passwordReceive = request.form['passwordGive']
+
+  cur.execute('SELECT * FROM User;')
+  data = cur.fetchall()
+  result = []
+  result.append([])
+  result[0].append('userID')
+  result[0].append('userEmail')
+  
+  count = 1
+
+  for rowdata in data:
+      result.append([])
+      result[count].append(rowdata[0])
+      result[count].append(rowdata[1])
+      count += 1
+
+  for i in len(result):
+    if (emailReceive in result[i] and passwordReceive == result[i][2]):
+      print("로그인 성공")
+      break
+
   return render_template('index.html', context=component_name)
 
 @app.route("/game")
 def game():
   component_name = 'game'
+  return render_template('index.html', context=component_name)
+
+@app.route("/signup", methods=['POST'])
+def signup():
+  component_name = 'signup'
+
+  emailReceive = request.form['emailGive']
+  passwordReceive = request.form['passwordGive']
+  print(emailReceive, passwordReceive)
+
+  return render_template('index.html', context=component_name)
+
+@app.route("/modifyuser")
+def modifyuser():
+  component_name = 'signup'
+
+  emailReceive = request.form['emailGive']
+  passwordReceive = request.form['passwordGive']
+
+  cur.execute()
+
   return render_template('index.html', context=component_name)
 
 if __name__ == '__main__':

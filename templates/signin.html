@@ -15,3 +15,24 @@
     </form>
   </div>
 </div>
+
+<script>
+  onclick {
+    let email = $('exampleInputEmail1').val()
+    let password = $('exampleInputPassword1').val()
+
+    $.ajax({
+      type: "POST",
+      url: "/signup",
+      data: {
+        emailGive: email,
+        passwordGive: password
+      },
+      success: function(response) {
+        alert(response["msg"]);
+        window.location.reload();
+      }
+    })
+  }
+  
+</script>
