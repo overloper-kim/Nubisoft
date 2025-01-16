@@ -9,10 +9,10 @@ template = env.get_template("index.html")
 
 # 개인 환경에 따라 host 및 포트 정보 수정
 HOST="127.0.0.1"
-PORT=3306
+PORT=3308
 USER="root"
-PW="root"
-DB="nubisoft"
+PW="sad123"
+DB="Nubisoft"
 
 db = ConnectMysql()
 conn, cur = db.mysql_create_session(HOST, PORT, USER, PW, DB)
@@ -80,6 +80,11 @@ def post_login():
   #     print("로그인 성공")
   #     break
 
+@app.route("/signup")
+def signup():
+  component_name = 'signup'
+  return render_template('index.html', context=component_name)
+
 @app.route("/signup", methods=['POST'])
 def post_signup():
   try:
@@ -116,7 +121,7 @@ def post_signup():
 
   except Exception as e:
     return f"Error : {e}"
-
+  
 @app.route("/store")
 def store():
   component_name = 'store'
