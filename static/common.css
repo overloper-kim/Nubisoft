@@ -1,0 +1,39 @@
+:root {
+  --header-color: #C4D9FF;
+}
+
+@import url('https://fonts.googleapis.com/css2?family=Nanum+Gothic&family=Noto+Sans+KR:wght@100..900&display=swap');
+
+* {
+  font-family: "Nanum Gothic", serif !important;
+}
+
+.wrapper {
+  height: auto;
+  min-height: 100%;
+  padding-bottom: 170xpx;
+}
+
+.navbar {
+  padding: 25px;
+}
+
+.navbar-brand {
+  padding: 0px 15px;
+}
+
+.navbar-brand > img {
+  width: 55px;
+}
+
+.singin-form {
+  display: flex;
+  justify-content: center;
+}
+
+footer {
+  width: 100%;
+  height: 170px;
+  position: relative;
+  transform: translateY(-100%);
+}
