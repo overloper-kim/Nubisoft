@@ -36,31 +36,49 @@ def get_login():
 
 @app.route("/login", methods=['POST'])
 def post_login():
-  email = request.form['email']
-  pw = request.form['pw']
 
-  cur.execute('SELECT * FROM User;')
-  data = cur.fetchall()
-  result = []
-  result.append([])
-  result[0].append('userID')
-  result[0].append('userEmail')
-  result[0].append('userPassword')
+  try:
+    email = request.form['email']
+    pw = request.form['pw']
+
+    query = "SELECT userPassword FROM User WHERE userEmail = %s"
+    cur.execute(query, email)
+    data = cur.fetchone()  # 이메일로 단일 사용자 조회
+
+    if data is None:
+        return "존재하지 않는 이메일입니다."
+    elif data[0] == pw:
+        return "로그인 성공"
+    else:
+        return "잘못된 비밀번호입니다."
+
+  except Exception as e:
+    return f"Error : {e}"
+
+
+
+  # email = request.form['email']
+  # pw = request.form['pw']
+
+  # cur.execute('SELECT * FROM User;')
+  # data = cur.fetchall()
+  # result = []
+  # result.append([])
+  # result[0].append('userEmail')
+  # result[0].append('userPassword')
   
-  count = 1
+  # count = 1
 
-  for rowdata in data:
-      result.append([])
-      result[count].append(rowdata[1])
-      result[count].append(rowdata[2])
-      count += 1
+  # for rowdata in data:
+  #     result.append([])
+  #     result[count].append(rowdata[1])
+  #     result[count].append(rowdata[2])
+  #     count += 1
 
-  for i in range(len(result)):
-    if (email in result[i][0] and pw == result[i][1]):
-      print("로그인 성공")
-      break
-
-  return "post 요청"
+  # for i in range(len(result) + 1):
+  #   if (email in result[i][0] and pw == result[i][1]):
+  #     print("로그인 성공")
+  #     break
 
 @app.route("/signup")
 def signup():
