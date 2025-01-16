@@ -129,7 +129,6 @@ def post_user_info():
 
     nickname = request.form['nickname']
     email = request.form['email']
-    pw = request.form['pw']
 
     query = "SELECT userNickname FROM User WHERE userNickname = %s"
     cur.execute(query, nickname)
