@@ -85,9 +85,9 @@ def signup():
   component_name = 'signup'
   return render_template('index.html', context=component_name)
 
-@app.route("/game")
-def game():
-  component_name = 'game'
+@app.route("/store")
+def store():
+  component_name = 'store'
   return render_template('index.html', context=component_name)
 
 if __name__ == '__main__':

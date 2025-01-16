@@ -4,8 +4,11 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>
-      {% if (context == '') %} NUBISOFT - 뉴비 소프트 {% elif (context ==
-      'login') %} NUBISOFT- 로그인 {% endif %}
+      {% if (context == '') %} NUBISOFT - 뉴비 소프트 
+      {% elif (context == 'login') %} NUBISOFT - 로그인 
+      {% elif (context == 'store') %} NUBISOFT - 상점 
+      {% elif (context == 'library') %} NUBISOFT - 라이브러리
+      {% endif %}
     </title>
     <link
       rel="stylesheet"
@@ -29,6 +32,10 @@
         {% include './signin.html' %}
       {% elif (context == 'signup') %}
         {% include './signup.html' %}
+      {% elif (context == 'store') %}
+        {% include './store.html' %} 
+      {% elif (context == 'achieve') %}
+        {% include './achieve.html' %} 
       {% endif %}
     </div>
     {% include './footer.html' %}
