@@ -1,5 +1,5 @@
 from connect_db import ConnectMysql
-from flask import Flask, render_template
+from flask import Flask, render_template, request
 from jinja2 import Environment, FileSystemLoader
 
 file_loader = FileSystemLoader("templates")
@@ -36,6 +36,10 @@ def get_login():
 
 @app.route("/login", methods=['POST'])
 def post_login():
+  email = request.form['email']
+  pw = request.form['pw']
+  print(email)
+  print(pw)
   return "post 요청"
 
 @app.route("/signup")
