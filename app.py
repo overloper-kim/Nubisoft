@@ -80,10 +80,42 @@ def post_login():
   #     print("로그인 성공")
   #     break
 
-@app.route("/signup")
-def signup():
-  component_name = 'signup'
-  return render_template('index.html', context=component_name)
+@app.route("/signup", methods=['POST'])
+def post_signup():
+  try:
+
+    nickname = request.form['nickname']
+    email = request.form['email']
+    pw = request.form['pw']
+
+    query = "SELECT userNickname FROM User WHERE userNickname = %s"
+    cur.execute(query, nickname)
+    nick_data = cur.fetchone()
+
+    if nick_data is None:
+      query = "SELECT userPassword FROM User WHERE userEmail = %s"
+      cur.execute(query, email)
+      email_data = cur.fetchone()
+
+      if email_data is None:
+        query = "INSERT INTO User (userEmail, userPassword, userNickname, userProfileImage) VALUES(%s, %s, %s, %s)"
+        cur.execute(query, (email, pw, nickname, 1))
+        result_data = cur.fetchall()
+        
+        if(result_data == []):
+          cur.execute("commit;")
+          return "회원가입 완료"
+        else:
+          print(result_data)
+          return "회원가입 오류"
+
+      elif email_data[0] == pw:
+        return "이미 존재하는 사용자입니다."
+    else:
+      return "이미 존재하는 사용자입니다."
+
+  except Exception as e:
+    return f"Error : {e}"
 
 @app.route("/store")
 def store():
