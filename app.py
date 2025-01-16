@@ -1,5 +1,5 @@
 from connect_db import ConnectMysql
-from flask import Flask, render_template, request
+from flask import Flask, make_response, render_template, request, redirect
 from jinja2 import Environment, FileSystemLoader
 
 file_loader = FileSystemLoader("templates")
@@ -31,8 +31,15 @@ def post_home():
 
 @app.route("/login", methods=['GET'])
 def get_login():
-  component_name = 'login'
-  return render_template('index.html', context=component_name)
+  user_id = request.cookies.get("user")
+
+  if(user_id):
+    component_name = "로그인 완료 상태"
+    resp = redirect("/")
+    return component_name
+  else: 
+    component_name = 'login'
+    return render_template('index.html', context=component_name)
 
 @app.route("/login", methods=['POST'])
 def post_login():
@@ -41,44 +48,21 @@ def post_login():
     email = request.form['email']
     pw = request.form['pw']
 
-    query = "SELECT userPassword FROM User WHERE userEmail = %s"
+    query = "SELECT userPassword, userId FROM User WHERE userEmail = %s"
     cur.execute(query, email)
     data = cur.fetchone()  # 이메일로 단일 사용자 조회
 
     if data is None:
         return "존재하지 않는 이메일입니다."
     elif data[0] == pw:
-        return "로그인 성공"
+        resp =  redirect("/")
+        resp.set_cookie("user", str(data[1]))
+        return resp
     else:
         return "잘못된 비밀번호입니다."
 
   except Exception as e:
     return f"Error : {e}"
-
-
-
-  # email = request.form['email']
-  # pw = request.form['pw']
-
-  # cur.execute('SELECT * FROM User;')
-  # data = cur.fetchall()
-  # result = []
-  # result.append([])
-  # result[0].append('userEmail')
-  # result[0].append('userPassword')
-  
-  # count = 1
-
-  # for rowdata in data:
-  #     result.append([])
-  #     result[count].append(rowdata[1])
-  #     result[count].append(rowdata[2])
-  #     count += 1
-
-  # for i in range(len(result) + 1):
-  #   if (email in result[i][0] and pw == result[i][1]):
-  #     print("로그인 성공")
-  #     break
 
 @app.route("/signup")
 def signup():
@@ -121,7 +105,61 @@ def post_signup():
 
   except Exception as e:
     return f"Error : {e}"
-  
+
+@app.route("/logout", methods=['GET'])
+def logout():
+  resp = redirect("/")
+  resp.delete_cookie("user")
+  return resp
+
+@app.route("/myaccount", methods=["GET"])
+def get_user_info():
+  user_id = request.cookies.get("user")
+
+  query = "SELECT userEmail, userNickname from User where userId = %s"
+  cur.execute(query, user_id)
+  user_data = cur.fetchone()
+
+  component_name = "editUser"
+  return render_template("index.html", context=component_name, data={"email": user_data[0], "name": user_data[1]})
+
+@app.route("/myaccount", methods=['POST'])
+def post_user_info():
+    user_id = request.cookies.get("user")
+
+    nickname = request.form['nickname']
+    email = request.form['email']
+    pw = request.form['pw']
+
+    query = "SELECT userNickname FROM User WHERE userNickname = %s"
+    cur.execute(query, nickname)
+    nick_data = cur.fetchone()
+
+    if nick_data is None:
+      query = "SELECT userPassword FROM User WHERE userEmail = %s"
+      cur.execute(query, email)
+      email_data = cur.fetchone()
+
+      # update 문
+      if email_data is None:
+        query = "UPDATE User SET userEmail = %s, userNickname = %s where userId like %s"
+        cur.execute(query, (email, nickname, user_id))
+        result_data = cur.fetchall()
+        
+        if(result_data == []):
+          cur.execute("commit;")
+          return "회원수정 완료!"
+        else:
+          print(result_data)
+          return "회원수정 오류"
+
+      elif email_data[0] == pw:
+        return "이미 사용하는 이메일 입니다."
+    else:
+      return "이미 사용하는 데이터 입니다."
+
+    return ""
+
 @app.route("/store")
 def store():
   component_name = 'store'
