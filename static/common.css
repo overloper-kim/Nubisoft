@@ -41,6 +41,8 @@ html, body {
   background-color: white;
   display: flex;
   justify-content: center;
+  flex-direction: column;
+  align-items: center;
 }
 
 .card-footer {
@@ -56,4 +58,9 @@ html, body {
   display: flex;
   justify-content: center;
   height: fit-content;
+}
+
+.form-control {
+  font-size: 1.5rem;
+  height: 3rem !important;
 }

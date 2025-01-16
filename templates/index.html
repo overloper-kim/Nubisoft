@@ -26,7 +26,9 @@
     <header>{% include './header.html' %}</header>
     <div class="wrapper">
       {% if (context == 'login') %}
-      {% include './signin.html' %}
+        {% include './signin.html' %}
+      {% elif (context == 'signup') %}
+        {% include './signup.html' %}
       {% endif %}
     </div>
     {% include './footer.html' %}

@@ -24,9 +24,23 @@ def home():
   print("Get 요청")
   return render_template('index.html', context='')
 
-@app.route("/login")
-def login():
+@app.route("/", methods=['POST'])
+def post_home():
+  print("post 요청")
+  return "끝"
+
+@app.route("/login", methods=['GET'])
+def get_login():
   component_name = 'login'
+  return render_template('index.html', context=component_name)
+
+@app.route("/login", methods=['POST'])
+def post_login():
+  return "post 요청"
+
+@app.route("/signup")
+def signup():
+  component_name = 'signup'
   return render_template('index.html', context=component_name)
 
 @app.route("/game")
