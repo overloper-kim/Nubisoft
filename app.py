@@ -1,5 +1,5 @@
 from connect_db import ConnectMysql
-from flask import Flask, render_template
+from flask import Flask, render_template, request
 from jinja2 import Environment, FileSystemLoader
 
 file_loader = FileSystemLoader("templates")
@@ -24,8 +24,13 @@ def home():
   print("Get 요청")
   return render_template('index.html', context='')
 
-@app.route("/login", methods=['POST'])
-def login():
+@app.route("/", methods=['POST'])
+def post_home():
+  print("post 요청")
+  return "끝"
+
+@app.route("/login", methods=['POST'], methods=['GET'])
+def get_login():
   component_name = 'login'
 
   emailReceive = request.form['emailGive']
@@ -51,6 +56,19 @@ def login():
       print("로그인 성공")
       break
 
+  return render_template('index.html', context=component_name)
+
+@app.route("/login", methods=['POST'])
+def post_login():
+  email = request.form['email']
+  pw = request.form['pw']
+  print(email)
+  print(pw)
+  return "post 요청"
+
+@app.route("/signup")
+def signup():
+  component_name = 'signup'
   return render_template('index.html', context=component_name)
 
 @app.route("/game")

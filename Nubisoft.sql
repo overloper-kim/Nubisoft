@@ -1,0 +1,69 @@
+USE Nubisoft;
+
+CREATE TABLE IF NOT EXISTS User (
+  userID INT NOT NULL,
+  userEmail VARCHAR(30) NOT NULL,
+  userPassword VARCHAR(70) NOT NULL,
+  userNickname VARCHAR(30) NOT NULL,
+  userProfileImage BLOB NOT NULL,
+  PRIMARY KEY (userID));
+
+CREATE TABLE IF NOT EXISTS Friends (
+  friendsID INT NOT NULL,
+  userID INT NOT NULL,
+  friendsAddDate DATETIME NOT NULL,
+  PRIMARY KEY (friendsID),
+  FOREIGN KEY (userID)
+  REFERENCES User (userID)
+  ON DELETE NO ACTION
+  ON UPDATE NO ACTION);
+
+CREATE TABLE IF NOT EXISTS Game (
+  gameID INT NOT NULL,
+  gameName VARCHAR(45) NOT NULL,
+  gamePrice VARCHAR(45) NOT NULL,
+  gameDeveloper VARCHAR(45) NOT NULL,
+  gameGenre VARCHAR(45) NOT NULL,
+  gameReleaseDate VARCHAR(45) NOT NULL,
+  PRIMARY KEY (gameID));
+
+CREATE TABLE IF NOT EXISTS Achievement (
+  achievementID INT NOT NULL,
+  achievementName VARCHAR(45) NOT NULL,
+  achievementContent VARCHAR(45) NOT NULL,
+  gameID INT NOT NULL,
+  PRIMARY KEY (achievementID),
+  FOREIGN KEY (gameID)
+  REFERENCES Game (gameID)
+  ON DELETE NO ACTION
+  ON UPDATE NO ACTION);
+
+CREATE TABLE IF NOT EXISTS UserAchievement (
+  userID INT NOT NULL,
+  achivementID INT NOT NULL,
+  achiveDate DATETIME NOT NULL,
+  achiveStatus TINYINT NOT NULL,
+  PRIMARY KEY (userID, achivementID),
+  FOREIGN KEY (userID)
+  REFERENCES User (userID)
+  ON DELETE NO ACTION
+  ON UPDATE NO ACTION,
+  FOREIGN KEY (achivementID)
+  REFERENCES Achievement (achievementID)
+  ON DELETE NO ACTION
+  ON UPDATE NO ACTION);
+
+CREATE TABLE IF NOT EXISTS UserGame (
+  userID INT NOT NULL,
+  gameID INT NOT NULL,
+  gamePlayTime TIME NOT NULL DEFAULT '0:00',
+  gamePurchaseDate DATE NOT NULL,
+  PRIMARY KEY (userID, gameID),
+  FOREIGN KEY (userID)
+  REFERENCES User (userID)
+  ON DELETE NO ACTION
+  ON UPDATE NO ACTION,
+  FOREIGN KEY (gameID)
+  REFERENCES Game (gameID)
+  ON DELETE NO ACTION
+  ON UPDATE NO ACTION);
