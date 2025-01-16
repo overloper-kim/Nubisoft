@@ -90,5 +90,10 @@ def store():
   component_name = 'store'
   return render_template('index.html', context=component_name)
 
+@app.route("/library")
+def library():
+   component_name = 'library'
+   return render_template('index.html', component_name)
+
 if __name__ == '__main__':
   app.run(port=8080, debug=True)
