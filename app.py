@@ -29,5 +29,10 @@ def login():
   component_name = 'login'
   return render_template('index.html', context=component_name)
 
+@app.route("/game")
+def game():
+  component_name = 'game'
+  return render_template('index.html', context=component_name)
+
 if __name__ == '__main__':
-  app.run()
+  app.run(port=8080, debug=True)
