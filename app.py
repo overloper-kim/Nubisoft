@@ -29,19 +29,13 @@ def home():
   print("Get 요청")
   return render_template('index.html', context='')
 
-@app.route("/", methods=['POST'])
-def post_home():
-  print("post 요청")
-  return "끝"
-
 @app.route("/login", methods=['GET'])
 def get_login():
   user_id = request.cookies.get("user")
 
   if(user_id):
-    component_name = "로그인 완료 상태"
-    resp = redirect("/")
-    return component_name
+    flash("로그인 완료 상태")
+    return redirect("/")
   else: 
     component_name = 'login'
     return render_template('index.html', context=component_name)
@@ -70,7 +64,7 @@ def post_login():
 
   except Exception as e:
     return f"Error : {e}"
-
+  
 @app.route("/signup")
 def signup():
   component_name = 'signup'
