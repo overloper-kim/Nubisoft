@@ -1,0 +1,33 @@
+<div class="inner-wrapper">
+  <div style="
+      width: 50%;
+      background-color: white;
+      padding: 45px;
+      border-radius: 15px;
+      display: flex;
+      justify-content: center;
+      flex-direction: column;
+    " class="signin-form">
+    <h4 style="text-align: center; padding-bottom: 15px">친구 목록</h4>
+    <ul class="list-group">
+      <li class="list-group-item" style="
+          display: flex;
+          flex-direction: row;
+          align-items: center;
+          justify-content: space-between;
+        ">
+        {{ data[0] }}
+        <button type="button" class="btn btn-danger">삭제</button>
+      </li>
+    </ul>
+    <button style="
+        width: 100%;
+        margin: 25px 0px;
+        padding: 15px 0px;
+        height: 25%;
+        font-weight: 600;
+      " type="submit" onclick="location.href='/friends'" class="btn btn-success">
+      친구 등록
+    </button>
+  </div>
+</div>
