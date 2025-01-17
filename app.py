@@ -1,7 +1,8 @@
 from datetime import date
 from connect_db import ConnectMysql
-from flask import Flask, make_response, render_template, request, redirect
+from flask import Flask, make_response, render_template, request, redirect, flash
 from jinja2 import Environment, FileSystemLoader
+from datetime import datetime
 
 file_loader = FileSystemLoader("templates")
 env = Environment(loader=file_loader)
@@ -10,9 +11,9 @@ template = env.get_template("index.html")
 
 # 개인 환경에 따라 host 및 포트 정보 수정
 HOST="127.0.0.1"
-PORT=3306
+PORT=3308
 USER="root"
-PW="root"
+PW="sad123"
 DB="Nubisoft"
 
 db = ConnectMysql()
@@ -20,6 +21,7 @@ conn, cur = db.mysql_create_session(HOST, PORT, USER, PW, DB)
 
 app = Flask(__name__)
 
+app.config["SECRET_KEY"] = "TEST"
 selectedGame = 0
 
 @app.route("/", methods=['GET'])
@@ -56,15 +58,15 @@ def post_login():
     data = cur.fetchone()  # 이메일로 단일 사용자 조회
 
     if data is None:
-        return "존재하지 않는 이메일입니다."
+        flash("존재하지 않는 이메일입니다.")
+        return redirect('/login')
     elif data[0] == pw:
         resp =  redirect("/")
         resp.set_cookie("user", str(data[1]))
-        global userid 
-        userid = data[1]
         return resp
     else:
-        return "잘못된 비밀번호입니다."
+        flash("잘못된 비밀번호입니다.")
+        return redirect("/")
 
   except Exception as e:
     return f"Error : {e}"
@@ -98,15 +100,18 @@ def post_signup():
         
         if(result_data == []):
           cur.execute("commit;")
-          return "회원가입 완료"
+          flash("회원가입에 성공하셨습니다.")
+          return redirect("/")
         else:
           print(result_data)
           return "회원가입 오류"
 
       elif email_data[0] == pw:
-        return "이미 존재하는 사용자입니다."
+        flash("이미 존재하는 사용자입니다.")
+        return redirect("/signup")
     else:
-      return "이미 존재하는 사용자입니다."
+      flash("이미 존재하는 사용자입니다.")
+      return redirect("/signup")
 
   except Exception as e:
     return f"Error : {e}"
@@ -121,17 +126,20 @@ def logout():
 def get_user_info():
   user_id = request.cookies.get("user")
 
-  query = "SELECT userEmail, userNickname from User where userId = %s"
-  cur.execute(query, user_id)
-  user_data = cur.fetchone()
+  if(user_id):
+    query = "SELECT userEmail, userNickname from User where userId = %s"
+    cur.execute(query, user_id)
+    user_data = cur.fetchone()
 
-  component_name = "editUser"
-  return render_template("index.html", context=component_name, data={"email": user_data[0], "name": user_data[1]})
+    component_name = "editUser"
+    return render_template("index.html", context=component_name, data={"email": user_data[0], "name": user_data[1]})
+  else:
+    flash("로그인을 하세요!")
+    return redirect("/login")
 
 @app.route("/myaccount", methods=['POST'])
 def post_user_info():
     user_id = request.cookies.get("user")
-
     nickname = request.form['nickname']
     email = request.form['email']
 
@@ -152,15 +160,18 @@ def post_user_info():
         
         if(result_data == []):
           cur.execute("commit;")
-          return "회원수정 완료!"
+          flash("회원수정 완료")
+          return redirect("/")
         else:
           print(result_data)
           return "회원수정 오류"
 
-      elif email_data[0] == pw:
-        return "이미 사용하는 이메일 입니다."
+      elif email_data[0]:
+        flash("이미 사용하는 이메일 입니다.")
+        return redirect("/myaccount")
     else:
-      return "이미 사용하는 데이터 입니다."
+      flash("이미 사용하는 닉네임 입니다.")
+      return redirect("/myaccount")
 
     return ""
 
@@ -302,6 +313,64 @@ def libraryUser():
 
   component_name = 'libraryUser'
   return render_template('index.html', context=component_name, data={"userachieveinfo":merged_result})
+
+@app.route("/friends/list", methods=['GET'])
+def get_friend():
+  cur.execute("SELECT * FROM Friends")
+  data = cur.fetchall()
+
+  friend_id = data[0][0]
+  query = "SELECT userNickname FROM User WHERE userID = %s"
+  cur.execute(query, friend_id)
+  result_data = cur.fetchone()
+  friend_name = result_data[0]
+
+  print(friend_name)
+
+  component_name = "friends"
+  return render_template('index.html', context=component_name, data=friend_name)
+
+@app.route("/friends", methods=['GET'])
+def get_add_friend():
+  component_name = "addfriends"
+  return render_template('index.html', context=component_name)
+
+@app.route("/friends", methods=['POST'])
+def post_add_friend():
+  nickname = request.form["nickname"]
+
+  query = "SELECT userId, userNickname FROM User WHERE userNickname like %s"
+  cur.execute(query, nickname)
+  data = cur.fetchone()
+
+  print(data)
+
+  if (not data):
+    flash("유저가 존재하지 않습니다!")
+    return redirect("/friends")
+  else:
+    friend_name = data[1]
+    return render_template('index.html', context="commitFriend", data=friend_name)
+
+@app.route("/commitFriend", methods=["POST"])
+def commit_friend():
+  user_id = request.cookies.get("user")
+  nickname = request.form["nickname"]
+  query = "SELECT userId FROM User WHERE userNickname like %s"
+  cur.execute(query, nickname)
+  data = cur.fetchone()
+
+  day = datetime.now()
+  edit_day = day.date()
+  print(edit_day)
+
+  querys = "INSERT INTO Friends VALUES (%s, %s, %s)"
+  cur.execute(querys, (int(data[0]), int(user_id), str(edit_day)))
+  result_data = cur.fetchone();
+  cur.execute("commit");
+  flash("친구 등록 완료!")
+
+  return redirect("/")
 
 if __name__ == '__main__':
   app.run(port=8080, debug=True)

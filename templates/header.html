@@ -27,11 +27,48 @@
         <a class="nav-link" href="/library">라이브러리</a>
       </li>
       <li class="nav-item">
+        <a class="nav-link" href="/myaccount">사용자</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="/friends/list">친구 등록</a>
+      </li>
+      <li class="nav-item">
         <a class="nav-link" href="/login">로그인</a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" href="/myaccount">사용자</a>
+        <a class="nav-link" href="/logout">로그아웃</a>
       </li>
     </ul>
   </div>
 </nav>
+
+{%with messages = get_flashed_messages()%}
+{%if messages %}
+  <script type="text/javascript">
+    var msg = "{{messages[-1]}}";
+    if (msg == "로그인을 하세요!") {
+      alert(msg)
+    } else if(msg == "존재하지 않는 이메일입니다.") {
+      alert(msg)
+    } else if(msg == "잘못된 비밀번호입니다.") {
+      alert(msg)
+    } else if(msg == "회원가입에 성공하셨습니다.") {
+      alert(msg)
+    } else if(msg == "이미 존재하는 사용자입니다.") {
+      alert(msg)
+    } else if(msg == "회원수정 완료") {
+      alert(msg)
+    } else if(msg == "이미 사용하는 이메일 입니다.") {
+      alert(msg)
+    } else if(msg == "이미 사용하는 닉네임 입니다.") {
+      alert(msg)
+    } else if(msg == "로그인 완료 상태") {
+      alert(msg)
+    } else if(msg == "유저가 존재하지 않습니다!") {
+      alert(msg)
+    } else if(msg == "친구 등록 완료!") {
+      alert(msg)
+    }
+  </script>
+  {%endif%}
+{%endwith%}
