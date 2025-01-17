@@ -1,39 +1,39 @@
 <div class="inner-wrapper">
     <div class="store-form">
-        <form style="width: 100%;" id="store-form">
+        <form style="width: 100%;" id="store-form" method="POST">
             <div style="height: 55px; display: flex; justify-content: space-between; align-items: center;" class="form-group">
-                <h4>게임1</h4>
+                <h4><a class="nav-link" href="/achieve">{{data.gameinfo[0][0]}}</a></h4>
                 <div style="width: fit-content;">
-                    <label for="gameprice1" style="padding: 0px 15px;">11,900원</label>
-                    <button style="font-weight: 600;" id="purchasegame1" class="btn btn-primary">구매</button>
+                    <label for="gameprice1" style="padding: 0px 15px;">{{data.gameinfo[0][1]}}</label>
+                    <button style="font-weight: 600;" name="purchase" value="1" class="btn btn-primary">구매</button>
                 </div>
             </div>
             <div style="height: 55px; display: flex; justify-content: space-between; align-items: center;" class="form-group">
-                <h4>게임2</h4>
+                <h4><a class="nav-link" href="/achieve">{{data.gameinfo[1][0]}}</a></h4>
                 <div style="width: fit-content;">
-                    <label for="gameprice1" style="padding: 0px 15px;">11,900원</label>
-                    <button style="font-weight: 600;" id="purchasegame1" class="btn btn-primary">구매</button>
+                    <label for="gameprice1" style="padding: 0px 15px;">{{data.gameinfo[1][1]}}</label>
+                    <button style="font-weight: 600;" name="purchase" value="2" class="btn btn-primary">구매</button>
                 </div>
             </div>
             <div style="height: 55px; display: flex; justify-content: space-between; align-items: center;" class="form-group">
-                <h4>게임3</h4>
+                <h4><a class="nav-link" href="/achieve">{{data.gameinfo[2][0]}}</a></h4>
                 <div style="width: fit-content;">
-                    <label for="gameprice1" style="padding: 0px 15px;">11,900원</label>
-                    <button style="font-weight: 600;" id="purchasegame1" class="btn btn-primary">구매</button>
+                    <label for="gameprice1" style="padding: 0px 15px;">{{data.gameinfo[2][1]}}</label>
+                    <button style="font-weight: 600;" name="purchase" value="3" class="btn btn-primary">구매</button>
                 </div>
             </div>
             <div style="height: 55px; display: flex; justify-content: space-between; align-items: center;" class="form-group">
-                <h4>게임4</h4>
+                <h4><a class="nav-link" href="/achieve">{{data.gameinfo[3][0]}}</a></h4>
                 <div style="width: fit-content;">
-                    <label for="gameprice1" style="padding: 0px 15px;">11,900원</label>
-                    <button style="font-weight: 600;" id="purchasegame1" class="btn btn-primary">구매</button>
+                    <label for="gameprice1" style="padding: 0px 15px;">{{data.gameinfo[3][1]}}</label>
+                    <button style="font-weight: 600;" name="purchase" value="4" class="btn btn-primary">구매</button>
                 </div>
             </div>
             <div style="height: 55px; display: flex; justify-content: space-between; align-items: center;" class="form-group">
-                <h4>게임5</h4>
+                <h4><a class="nav-link" href="/achieve">{{data.gameinfo[4][0]}}</a></h4>
                 <div style="width: fit-content;">
-                    <label for="gameprice1" style="padding: 0px 15px;">11,900원</label>
-                    <button style="font-weight: 600;" id="purchasegame1" class="btn btn-primary">구매</button>
+                    <label for="gameprice1" style="padding: 0px 15px;">{{data.gameinfo[4][1]}}</label>
+                    <button style="font-weight: 600;" name="purchase" value="5" class="btn btn-primary">구매</button>
                 </div>
             </div>
         </form>

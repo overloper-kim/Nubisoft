@@ -1,0 +1,16 @@
+<div class="inner-wrapper">
+    <div class="store-form">
+        <form style="width: 100%;" id="store-form">
+            <!-- <div style="height: 55px; display: flex; justify-content: space-between; align-items: center;" class="form-group">
+                <h4>{{data.usergameinfo[0][0]}}</h4>
+                <h6>{{data.usergameinfo[0][1]}}</h6>
+            </div> -->
+            {% for count in range(data.usergameinfo | length) %}
+                <div style="height: 55px; display: flex; justify-content: space-between; align-items: center;" class="form-group">
+                    <h4><a class="nav-link" href="/libraryUser">{{data.usergameinfo[count][2]}}</a></h4> <!-- Game Name -->
+                    <h6>{{data.usergameinfo[count][1]}}</h6> <!-- Gametime -->
+                </div>
+            {% endfor %}
+        </form>
+    </div>
+</div>

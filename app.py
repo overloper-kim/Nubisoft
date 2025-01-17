@@ -1,3 +1,4 @@
+from datetime import date
 from connect_db import ConnectMysql
 from flask import Flask, make_response, render_template, request, redirect
 from jinja2 import Environment, FileSystemLoader
@@ -9,15 +10,17 @@ template = env.get_template("index.html")
 
 # 개인 환경에 따라 host 및 포트 정보 수정
 HOST="127.0.0.1"
-PORT=3308
+PORT=3306
 USER="root"
-PW="sad123"
+PW="root"
 DB="Nubisoft"
 
 db = ConnectMysql()
 conn, cur = db.mysql_create_session(HOST, PORT, USER, PW, DB)
 
 app = Flask(__name__)
+
+selectedGame = 0
 
 @app.route("/", methods=['GET'])
 def home():
@@ -57,6 +60,8 @@ def post_login():
     elif data[0] == pw:
         resp =  redirect("/")
         resp.set_cookie("user", str(data[1]))
+        global userid 
+        userid = data[1]
         return resp
     else:
         return "잘못된 비밀번호입니다."
@@ -159,15 +164,144 @@ def post_user_info():
 
     return ""
 
-@app.route("/store")
-def store():
+@app.route("/store", methods=["GET"])
+def get_store():
+  cur.execute('SELECT * FROM Game')
+  data = cur.fetchall()
+  
+  result = []
+  count = 0
+  for rowdata in data:
+    result.append([])
+    result[count].append(rowdata[1])
+    result[count].append(rowdata[2])
+    count += 1
+
   component_name = 'store'
-  return render_template('index.html', context=component_name)
+  return render_template('index.html', context=component_name, data={"gameinfo":result})
+
+@app.route("/store", methods=["POST"])
+def post_store():
+  gameID = int(request.form["purchase"])
+  print(gameID)
+
+  userid = request.cookies.get("user")
+
+  sqlQuery = 'INSERT INTO UserGame(userID, gameID, gamePlayTime) VALUES(%s, %s, %s)'
+
+  selectedGame = int(gameID)
+
+  args = (userid, selectedGame, "0:00")
+
+  print(sqlQuery, args)
+
+  cur.execute(sqlQuery, args)
+  conn.commit()
+
+  resp = redirect("/library")
+  return resp
 
 @app.route("/library")
 def library():
-   component_name = 'library'
-   return render_template('index.html', component_name)
+  cur.execute('SELECT * FROM UserGame')
+  data = cur.fetchall()
+  
+  result = []
+  count = 0
+  for rowdata in data:
+    result.append([])
+    result[count].append(rowdata[1])
+    result[count].append(rowdata[2])
+    count += 1
+
+  cur.execute(f'SELECT gameID, gameName FROM Game')
+  data = cur.fetchall()
+  gamenameresult = []
+  gamenamecount = 0
+  for rowdata in data:
+    gamenameresult.append([])
+    gamenameresult[gamenamecount].append(rowdata[0])
+    gamenameresult[gamenamecount].append(rowdata[1])
+    gamenamecount += 1
+
+  gamenames_dict = {game[0]: game[1] for game in gamenameresult}
+
+  merged_result = []
+  for gameid, gametime in result:
+      if gameid in gamenames_dict:
+          merged_result.append((gameid, str(gametime), gamenames_dict[gameid]))
+
+  print(merged_result)
+
+  component_name = 'library'
+  return render_template('index.html', context=component_name, data={"usergameinfo":merged_result})
+
+@app.route("/achieve", methods=["GET"])
+def get_achieve():
+  cur.execute('SELECT * FROM Achievement')
+  data = cur.fetchall()
+  
+  result = []
+  count = 0
+  for rowdata in data:
+    result.append([])
+    result[count].append(rowdata[1])
+    result[count].append(rowdata[2])
+    count += 1
+
+  component_name = 'achieve'
+  return render_template('index.html', context=component_name, data={"achieveinfo":result})
+
+@app.route("/achieve", methods=["POST"])
+def post_achieve():
+  achieveID = request.form["button"]
+
+  userid = request.cookies.get("user")
+  
+  sqlQuery = 'INSERT INTO UserAchievement(userID, achievementID, achieveDate, achieveStatus) VALUES(%s, %s, %s, %s)'
+  args = (userid, achieveID, date.today(), 1)
+
+  cur.execute(sqlQuery, args)
+  conn.commit()
+
+  resp = redirect("/library")
+  return resp
+
+@app.route("/libraryUser")
+def libraryUser():
+  cur.execute('SELECT * FROM UserAchievement')
+  data = cur.fetchall()
+  
+  result = []
+  count = 0
+  for rowdata in data:
+    result.append([])
+    result[count].append(rowdata[1])
+    result[count].append(rowdata[2])
+    count += 1
+
+  cur.execute(f'SELECT achievementID, achievementName FROM Achievement')
+  data = cur.fetchall()
+  achinameresult = []
+  achinamecount = 0
+
+  for rowdata in data:
+    achinameresult.append([])
+    achinameresult[achinamecount].append(rowdata[0])
+    achinameresult[achinamecount].append(rowdata[1])
+    achinamecount += 1
+
+  achinames_dict = {achi[0]: achi[1] for achi in achinameresult}
+
+  merged_result = []
+  for achiid, achitime in result:
+      if achiid in achinames_dict:
+          merged_result.append((achiid, str(achitime), achinames_dict[achiid]))
+
+  print(merged_result)
+
+  component_name = 'libraryUser'
+  return render_template('index.html', context=component_name, data={"userachieveinfo":merged_result})
 
 if __name__ == '__main__':
   app.run(port=8080, debug=True)

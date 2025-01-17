@@ -1,0 +1,12 @@
+<div class="inner-wrapper">
+    <div class="store-form">
+        <form style="width: 100%;" id="store-form">
+            {% for count in range(data.userachieveinfo | length) %}
+                <div style="height: 55px; display: flex; justify-content: space-between; align-items: center;" class="form-group">
+                    <h4>{{data.userachieveinfo[count][2]}}</h4>
+                    <h6>{{data.userachieveinfo[count][1]}}</h6>
+                </div>
+            {% endfor %}
+        </form>
+    </div>
+</div>
